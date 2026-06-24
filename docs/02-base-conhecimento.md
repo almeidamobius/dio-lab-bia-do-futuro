@@ -22,3 +22,44 @@ Todos os dados são provenientes do dataset público:
 - **Atualização:** Regular, com registro em `spec.json`
 
 ### Estrutura Local dos Dados
+
+
+---
+
+## Adaptações nos Dados
+
+### Mudanças em relação ao projeto original
+
+| Aspecto | Original | Adaptação |
+|---------|----------|-----------|
+| **Fonte de dados** | Dados mockados (fictícios) | Dados reais do Yahoo Finance |
+| **Formato** | CSV e JSON | Parquet (formato otimizado) |
+| **Escopo** | Dados do cliente (gastos, perfil) | Dados de mercado (ações, finanças) |
+| **Atualização** | Estático | Dinâmico (atualizado via script) |
+
+### Por que essas mudanças?
+
+1. **Dados Reais:** O projeto ganha complexidade e relevância ao usar dados reais de mercado
+2. **Formato Parquet:** Mais eficiente para grandes volumes de dados
+3. **Escalabilidade:** Possibilidade de adicionar mais empresas e indicadores
+4. **Aprendizado:** Uso de ferramentas reais (DuckDB, Hugging Face)
+
+---
+
+## Estratégia de Integração
+
+### Como os dados são carregados?
+
+Os dados são carregados usando **DuckDB** para consultas SQL diretamente nos arquivos Parquet:
+
+```python
+# Exemplo de carregamento
+import duckdb
+
+conn = duckdb.connect()
+query = """
+    SELECT * FROM 'data/raw/yahoo_finance/stock_prices_BBDC4.parquet'
+    ORDER BY report_date DESC
+    LIMIT 10
+"""
+df = conn.execute(query).df()
